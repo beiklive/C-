@@ -2,12 +2,20 @@
 #include<fstream>
 #include<string>
 #include<vector>
+#include <chrono>
 #include<nlohmann/json.hpp>
 
 int main(){
-    nlohmann::json j;
-    std::ifstream ifs("library.json");
-    ifs >> j;
+    
+    auto startTime = std::chrono::system_clock::now();
+    auto endTime = std::chrono::system_clock::now();
+
+
+    nlohmann::json j = []
+    {
+        std::ifstream ifs("library.json");
+        return nlohmann::json::parse(std::string{ (std::istreambuf_iterator<char>(ifs)),(std::istreambuf_iterator<char>()) });
+    }();
 
     std::string py;
     std::cout << "Please input pinyin: ";
@@ -19,5 +27,6 @@ int main(){
             std::cout << "===============================" << std::endl;
         }
     }
+    std::cout << "time:" << std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime).count() << "ms"<< std::endl;
     return 0;
 }
